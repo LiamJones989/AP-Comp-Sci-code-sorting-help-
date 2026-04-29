@@ -31,6 +31,7 @@
   <option>Insertion Sort</option>
   <option>Merge Sort</option>
 </select>
+
 <button onclick="generate()">Start</button>
 <button onclick="giveHint()">Hint</button>
 <button onclick="showAnswer()">Show Answer</button>
@@ -53,18 +54,21 @@ function generate() {
   arr = [];
   currentIndex = 0;
 
+  let instr = document.getElementById("instruction");
+  instr.style.color = "black";
+
   if (algo === "Binary Search") {
     for (let i = 1; i <= 15; i++) arr.push(i);
     target = Math.floor(Math.random() * 15) + 1;
     low = 0;
     high = arr.length - 1;
-    document.getElementById("instruction").innerText = "Find: " + target;
+    instr.innerText = "Find: " + target;
   } else {
     while (arr.length < 8) {
       let num = Math.floor(Math.random() * 8) + 1;
       if (!arr.includes(num)) arr.push(num);
     }
-    document.getElementById("instruction").innerText = "Follow correct algorithm steps";
+    instr.innerText = "Follow correct algorithm steps";
   }
 
   render();
@@ -83,6 +87,7 @@ function render() {
     if (algo === "Binary Search") {
       if (i >= low && i <= high) div.classList.add("active");
       else div.classList.add("wrong");
+
       div.onclick = () => binaryStep(i);
     } else {
       div.classList.add("draggable");
@@ -97,6 +102,7 @@ function render() {
       div.addEventListener("drop", e => {
         let from = parseInt(e.dataTransfer.getData("index"));
         let to = i;
+
         if (isValidMove(from, to)) {
           [arr[from], arr[to]] = [arr[to], arr[from]];
           updateStepProgress(from, to);
@@ -153,7 +159,7 @@ function isValidMove(from, to) {
   }
 
   if (algo === "Merge Sort") {
-    return true; // allow free movement for visualization
+    return true;
   }
 
   return false;
@@ -163,7 +169,7 @@ function updateStepProgress(from, to) {
   let algo = document.getElementById("algo").value;
 
   if (algo === "Selection Sort") currentIndex++;
-  if (algo === "Insertion Sort" && currentIndex < arr.length - 1) currentIndex++;
+  if (algo === "Insertion Sort") currentIndex++;
 }
 
 function giveHint() {
@@ -195,6 +201,11 @@ function showAnswer() {
 
   boxes.forEach(b => b.classList.remove("hint"));
 
+  if (algo === "Binary Search") {
+    let mid = Math.floor((low + high) / 2);
+    boxes[mid].classList.add("hint");
+  }
+
   if (algo === "Selection Sort") {
     let minIndex = currentIndex;
     for (let i = currentIndex; i < arr.length; i++)
@@ -207,23 +218,6 @@ function showAnswer() {
   if (algo === "Insertion Sort") {
     boxes[currentIndex].classList.add("hint");
     if (currentIndex > 0) boxes[currentIndex - 1].classList.add("hint");
-  }
-
-  if (algo === "Binary Search") {
-    let mid = Math.floor((low + high) / 2);
-    boxes[mid].classList.add("hint");
-  }
-}
-
-  if (algo === "Selection Sort") {
-    let minIndex = currentIndex;
-    for (let i = currentIndex; i < arr.length; i++)
-      if (arr[i] < arr[minIndex]) minIndex = i;
-    boxes[minIndex].classList.add("hint");
-  }
-
-  if (algo === "Insertion Sort") {
-    boxes[currentIndex].classList.add("hint");
   }
 }
 
