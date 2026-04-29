@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sorting Practice</title>
+<style>
+  body { font-family: Arial; text-align: center; }
+  #array { display: flex; justify-content: center; margin: 20px; }
+  .box {
+    width: 40px; height: 40px; margin: 5px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid black; cursor: pointer;
+  }
+  .selected { background-color: yellow; }
+  .correct { background-color: lightgreen; }
+</style>
+</head>
+<body>
+
+<h2>Sorting Practice Tool</h2>
+
+<select id="algo">
+  <option>Binary Search</option>
+  <option>Selection Sort</option>
+  <option>Insertion Sort</option>
+  <option>Merge Sort</option>
+</select>
+<button onclick="generate()">Start</button>
+
+<p id="instruction"></p>
+
+<div id="array"></div>
+
+<script>
+let arr = [];
+let selected = null;
+let target = null;
+
+function generate() {
+  let algo = document.getElementById("algo").value;
+  let container = document.getElementById("array");
+  container.innerHTML = "";
+  arr = [];
+
+  if (algo === "Binary Search") {
+    for (let i = 1; i <= 15; i++) arr.push(i);
+    target = Math.floor(Math.random() * 15) + 1;
+    document.getElementById("instruction").innerText = "Find: " + target;
+  } else {
+    while (arr.length < 8) {
+      let num = Math.floor(Math.random() * 8) + 1;
+      if (!arr.includes(num)) arr.push(num);
+    }
+    document.getElementById("instruction").innerText = "Sort the array";
+  }
+
+  arr.forEach((num, i) => {
+    let div = document.createElement("div");
+    div.className = "box";
+    div.innerText = num;
+    div.onclick = () => clickBox(div, i);
+    container.appendChild(div);
+  });
+}
+
+function clickBox(div, index) {
+  if (!selected) {
+    selected = div;
+    div.classList.add("selected");
+  } else {
+    // swap
+    let temp = selected.innerText;
+    selected.innerText = div.innerText;
+    div.innerText = temp;
+
+    selected.classList.remove("selected");
+    selected = null;
+
+    checkCorrect();
+  }
+}
+
+function checkCorrect() {
+  let boxes = document.querySelectorAll(".box");
+  let values = Array.from(boxes).map(b => parseInt(b.innerText));
+
+  let sorted = [...values].sort((a,b)=>a-b);
+
+  boxes.forEach((b, i) => {
+    if (values[i] === sorted[i]) {
+      b.classList.add("correct");
+    } else {
+      b.classList.remove("correct");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
