@@ -7,13 +7,14 @@
   body { font-family: Arial; text-align: center; }
   #array { display: flex; justify-content: center; margin: 20px; }
   .box {
-    width: 40px; height: 40px; margin: 5px;
+    width: 45px; height: 45px; margin: 5px;
     display: flex; align-items: center; justify-content: center;
-    border: 2px solid black; cursor: grab;
+    border: 2px solid black; font-weight: bold;
   }
+  .draggable { cursor: grab; }
   .dragging { opacity: 0.5; }
   .correct { background-color: lightgreen; }
-  #steps { margin-top: 20px; font-size: 14px; }
+  #steps { margin-top: 20px; font-size: 14px; max-width: 500px; margin-left:auto; margin-right:auto; }
 </style>
 </head>
 <body>
@@ -36,23 +37,26 @@
 
 <script>
 let arr = [];
+let target = null;
+let low = 0;
+let high = 0;
 
 function generate() {
   let algo = document.getElementById("algo").value;
-  let container = document.getElementById("array");
-  container.innerHTML = "";
   arr = [];
 
   if (algo === "Binary Search") {
     for (let i = 1; i <= 15; i++) arr.push(i);
-    let target = Math.floor(Math.random() * 15) + 1;
-    document.getElementById("instruction").innerText = "Find: " + target;
+    target = Math.floor(Math.random() * 15) + 1;
+    low = 0;
+    high = arr.length - 1;
+    document.getElementById("instruction").innerText = "Click to search for: " + target;
   } else {
     while (arr.length < 8) {
       let num = Math.floor(Math.random() * 8) + 1;
       if (!arr.includes(num)) arr.push(num);
     }
-    document.getElementById("instruction").innerText = "Drag to sort";
+    document.getElementById("instruction").innerText = "Drag numbers to sort";
   }
 
   render();
@@ -61,35 +65,59 @@ function generate() {
 function render() {
   let container = document.getElementById("array");
   container.innerHTML = "";
+  let algo = document.getElementById("algo").value;
 
   arr.forEach((num, i) => {
     let div = document.createElement("div");
     div.className = "box";
     div.innerText = num;
-    div.draggable = true;
 
-    div.addEventListener("dragstart", e => {
-      div.classList.add("dragging");
-      e.dataTransfer.setData("index", i);
-    });
+    if (algo === "Binary Search") {
+      div.onclick = () => binaryStep(i);
+    } else {
+      div.classList.add("draggable");
+      div.draggable = true;
 
-    div.addEventListener("dragend", () => {
-      div.classList.remove("dragging");
-    });
+      div.addEventListener("dragstart", e => {
+        div.classList.add("dragging");
+        e.dataTransfer.setData("index", i);
+      });
 
-    div.addEventListener("dragover", e => e.preventDefault());
+      div.addEventListener("dragend", () => div.classList.remove("dragging"));
+      div.addEventListener("dragover", e => e.preventDefault());
 
-    div.addEventListener("drop", e => {
-      let from = e.dataTransfer.getData("index");
-      let to = i;
-      [arr[from], arr[to]] = [arr[to], arr[from]];
-      render();
-    });
+      div.addEventListener("drop", e => {
+        let from = parseInt(e.dataTransfer.getData("index"));
+        let to = i;
+        if (from === to) return;
+        [arr[from], arr[to]] = [arr[to], arr[from]];
+        render();
+      });
+    }
 
     container.appendChild(div);
   });
 
-  checkCorrect();
+  if (algo !== "Binary Search") checkCorrect();
+}
+
+function binaryStep(index) {
+  let mid = Math.floor((low + high) / 2);
+
+  if (index !== mid) {
+    document.getElementById("instruction").innerText = "Wrong step! Click the middle index.";
+    return;
+  }
+
+  if (arr[mid] === target) {
+    document.getElementById("instruction").innerText = "Found " + target + " correctly!";
+  } else if (arr[mid] < target) {
+    low = mid + 1;
+    document.getElementById("instruction").innerText = "Go right";
+  } else {
+    high = mid - 1;
+    document.getElementById("instruction").innerText = "Go left";
+  }
 }
 
 function checkCorrect() {
@@ -107,15 +135,17 @@ function updateSteps() {
   let steps = document.getElementById("steps");
 
   if (algo === "Selection Sort") {
-    steps.innerText = "Selection Sort Steps: Find smallest number, swap with first. Move right and repeat.";
+    steps.innerText = "Selection Sort:\n1. Find smallest number\n2. Swap with first unsorted\n3. Move forward\n4. Repeat";
   } else if (algo === "Insertion Sort") {
-    steps.innerText = "Insertion Sort Steps: Take next number, move it left until it is in correct position.";
+    steps.innerText = "Insertion Sort:\n1. Take next number\n2. Compare left\n3. Shift bigger numbers right\n4. Insert in correct spot";
   } else if (algo === "Merge Sort") {
-    steps.innerText = "Merge Sort Steps: Split array in half, sort each half, then merge them together in order.";
+    steps.innerText = "Merge Sort:\n1. Split array in half\n2. Keep splitting\n3. Merge sorted halves\n4. Repeat until sorted";
   } else {
-    steps.innerText = "Binary Search Steps: Check middle, go left or right depending on target.";
+    steps.innerText = "Binary Search:\n1. Check middle\n2. If smaller go left\n3. If bigger go right\n4. Repeat";
   }
 }
+
+updateSteps();
 </script>
 
 </body>
