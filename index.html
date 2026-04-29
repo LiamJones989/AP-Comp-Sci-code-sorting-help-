@@ -4,21 +4,21 @@
 <meta charset="UTF-8">
 <title>Sorting Practice</title>
 <style>
-  body { font-family: Arial; text-align: center; }
-  #array { display: flex; justify-content: center; margin: 20px; }
-  .box {
-    width: 45px; height: 45px; margin: 5px;
-    display: flex; align-items: center; justify-content: center;
-    border: 2px solid black; font-weight: bold;
-  }
-  .draggable { cursor: grab; }
-  .dragging { opacity: 0.5; }
-  .correct { background-color: lightgreen; }
-  .wrong { background-color: #ffb3b3; }
-  .hint { background-color: yellow; }
-  .active { outline: 3px solid blue; }
-  #steps { margin-top: 20px; font-size: 14px; max-width: 500px; margin-left:auto; margin-right:auto; }
-  button { margin: 5px; }
+  body { font-family: Arial; text-align: center; }
+  #array { display: flex; justify-content: center; margin: 20px; }
+  .box {
+    width: 45px; height: 45px; margin: 5px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid black; font-weight: bold;
+  }
+  .draggable { cursor: grab; }
+  .dragging { opacity: 0.5; }
+  .correct { background-color: lightgreen; }
+  .wrong { background-color: #ffb3b3; }
+  .hint { background-color: yellow; }
+  .active { outline: 3px solid blue; }
+  #steps { margin-top: 20px; font-size: 14px; max-width: 500px; margin-left:auto; margin-right:auto; }
+  button { margin: 5px; }
 </style>
 </head>
 <body>
@@ -26,10 +26,10 @@
 <h2>Sorting Practice Tool</h2>
 
 <select id="algo" onchange="updateSteps()">
-  <option>Binary Search</option>
-  <option>Selection Sort</option>
-  <option>Insertion Sort</option>
-  <option>Merge Sort</option>
+  <option>Binary Search</option>
+  <option>Selection Sort</option>
+  <option>Insertion Sort</option>
+  <option>Merge Sort</option>
 </select>
 <button onclick="generate()">Start</button>
 <button onclick="giveHint()">Hint</button>
@@ -48,169 +48,169 @@ let high = 0;
 let currentIndex = 0;
 
 function generate() {
-  let algo = document.getElementById("algo").value;
-  arr = [];
-  currentIndex = 0;
+  let algo = document.getElementById("algo").value;
+  arr = [];
+  currentIndex = 0;
 
-  if (algo === "Binary Search") {
-    for (let i = 1; i <= 15; i++) arr.push(i);
-    target = Math.floor(Math.random() * 15) + 1;
-    low = 0;
-    high = arr.length - 1;
-    document.getElementById("instruction").innerText = "Find: " + target;
-  } else {
-    while (arr.length < 8) {
-      let num = Math.floor(Math.random() * 8) + 1;
-      if (!arr.includes(num)) arr.push(num);
-    }
-    document.getElementById("instruction").innerText = "Follow correct algorithm steps";
-  }
+  if (algo === "Binary Search") {
+    for (let i = 1; i <= 15; i++) arr.push(i);
+    target = Math.floor(Math.random() * 15) + 1;
+    low = 0;
+    high = arr.length - 1;
+    document.getElementById("instruction").innerText = "Find: " + target;
+  } else {
+    while (arr.length < 8) {
+      let num = Math.floor(Math.random() * 8) + 1;
+      if (!arr.includes(num)) arr.push(num);
+    }
+    document.getElementById("instruction").innerText = "Follow correct algorithm steps";
+  }
 
-  render();
+  render();
 }
 
 function render() {
-  let container = document.getElementById("array");
-  container.innerHTML = "";
-  let algo = document.getElementById("algo").value;
+  let container = document.getElementById("array");
+  container.innerHTML = "";
+  let algo = document.getElementById("algo").value;
 
-  arr.forEach((num, i) => {
-    let div = document.createElement("div");
-    div.className = "box";
-    div.innerText = num;
+  arr.forEach((num, i) => {
+    let div = document.createElement("div");
+    div.className = "box";
+    div.innerText = num;
 
-    if (algo === "Binary Search") {
-      if (i >= low && i <= high) div.classList.add("active");
-      else div.classList.add("wrong");
-      div.onclick = () => binaryStep(i);
-    } else {
-      div.classList.add("draggable");
-      div.draggable = true;
+    if (algo === "Binary Search") {
+      if (i >= low && i <= high) div.classList.add("active");
+      else div.classList.add("wrong");
+      div.onclick = () => binaryStep(i);
+    } else {
+      div.classList.add("draggable");
+      div.draggable = true;
 
-      div.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("index", i);
-      });
+      div.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("index", i);
+      });
 
-      div.addEventListener("dragover", e => e.preventDefault());
+      div.addEventListener("dragover", e => e.preventDefault());
 
-      div.addEventListener("drop", e => {
-        let from = parseInt(e.dataTransfer.getData("index"));
-        let to = i;
-        if (isValidMove(from, to)) {
-          [arr[from], arr[to]] = [arr[to], arr[from]];
-          updateStepProgress(from, to);
-          render();
-        } else {
-          let instr = document.getElementById("instruction");
-          instr.innerText = "Invalid move";
-          instr.style.color = "red";
-          setTimeout(() => {
-            instr.innerText = "Follow the correct moves";
-            instr.style.color = "black";
-          }, 2000);
-        }
-      });
-    }
+      div.addEventListener("drop", e => {
+        let from = parseInt(e.dataTransfer.getData("index"));
+        let to = i;
+        if (isValidMove(from, to)) {
+          [arr[from], arr[to]] = [arr[to], arr[from]];
+          updateStepProgress(from, to);
+          render();
+        } else {
+          let instr = document.getElementById("instruction");
+          instr.innerText = "Invalid move";
+          instr.style.color = "red";
+          setTimeout(() => {
+            instr.innerText = "Follow the correct moves";
+            instr.style.color = "black";
+          }, 2000);
+        }
+      });
+    }
 
-    container.appendChild(div);
-  });
+    container.appendChild(div);
+  });
 
-  if (algo !== "Binary Search") checkCorrect();
+  if (algo !== "Binary Search") checkCorrect();
 }
 
 function binaryStep(index) {
-  let mid = Math.floor((low + high) / 2);
+  let mid = Math.floor((low + high) / 2);
 
-  if (index !== mid) {
-    document.getElementById("instruction").innerText = "Click the middle index";
-    return;
-  }
+  if (index !== mid) {
+    document.getElementById("instruction").innerText = "Click the middle index";
+    return;
+  }
 
-  if (arr[mid] === target) {
-    document.getElementById("instruction").innerText = "Found it!";
-  } else if (arr[mid] < target) {
-    low = mid + 1;
-  } else {
-    high = mid - 1;
-  }
+  if (arr[mid] === target) {
+    document.getElementById("instruction").innerText = "Found it!";
+  } else if (arr[mid] < target) {
+    low = mid + 1;
+  } else {
+    high = mid - 1;
+  }
 
-  render();
+  render();
 }
 
 function isValidMove(from, to) {
-  let algo = document.getElementById("algo").value;
+  let algo = document.getElementById("algo").value;
 
-  if (algo === "Selection Sort") {
-    let minIndex = currentIndex;
-    for (let i = currentIndex; i < arr.length; i++)
-      if (arr[i] < arr[minIndex]) minIndex = i;
-    return from === minIndex && to === currentIndex;
-  }
+  if (algo === "Selection Sort") {
+    let minIndex = currentIndex;
+    for (let i = currentIndex; i < arr.length; i++)
+      if (arr[i] < arr[minIndex]) minIndex = i;
+    return from === minIndex && to === currentIndex;
+  }
 
-  if (algo === "Insertion Sort") {
-    return Math.abs(from - to) === 1;
-  }
+  if (algo === "Insertion Sort") {
+    return Math.abs(from - to) === 1;
+  }
 
-  if (algo === "Merge Sort") {
-    return true; // allow free movement for visualization
-  }
+  if (algo === "Merge Sort") {
+    return true; // allow free movement for visualization
+  }
 
-  return false;
+  return false;
 }
 
 function updateStepProgress(from, to) {
-  let algo = document.getElementById("algo").value;
+  let algo = document.getElementById("algo").value;
 
-  if (algo === "Selection Sort") currentIndex++;
-  if (algo === "Insertion Sort" && currentIndex < arr.length - 1) currentIndex++;
+  if (algo === "Selection Sort") currentIndex++;
+  if (algo === "Insertion Sort" && currentIndex < arr.length - 1) currentIndex++;
 }
 
 function giveHint() {
-  let algo = document.getElementById("algo").value;
-  let boxes = document.querySelectorAll(".box");
+  let algo = document.getElementById("algo").value;
+  let boxes = document.querySelectorAll(".box");
 
-  boxes.forEach(b => b.classList.remove("hint"));
+  boxes.forEach(b => b.classList.remove("hint"));
 
-  if (algo === "Binary Search") {
-    let mid = Math.floor((low + high) / 2);
-    boxes[mid].classList.add("hint");
-  }
+  if (algo === "Binary Search") {
+    let mid = Math.floor((low + high) / 2);
+    boxes[mid].classList.add("hint");
+  }
 
-  if (algo === "Selection Sort") {
-    let minIndex = currentIndex;
-    for (let i = currentIndex; i < arr.length; i++)
-      if (arr[i] < arr[minIndex]) minIndex = i;
-    boxes[minIndex].classList.add("hint");
-  }
+  if (algo === "Selection Sort") {
+    let minIndex = currentIndex;
+    for (let i = currentIndex; i < arr.length; i++)
+      if (arr[i] < arr[minIndex]) minIndex = i;
+    boxes[minIndex].classList.add("hint");
+  }
 
-  if (algo === "Insertion Sort") {
-    boxes[currentIndex].classList.add("hint");
-  }
+  if (algo === "Insertion Sort") {
+    boxes[currentIndex].classList.add("hint");
+  }
 }
 
 function checkCorrect() {
-  let boxes = document.querySelectorAll(".box");
-  let sorted = [...arr].sort((a,b)=>a-b);
+  let boxes = document.querySelectorAll(".box");
+  let sorted = [...arr].sort((a,b)=>a-b);
 
-  boxes.forEach((b, i) => {
-    if (arr[i] === sorted[i]) b.classList.add("correct");
-    else b.classList.remove("correct");
-  });
+  boxes.forEach((b, i) => {
+    if (arr[i] === sorted[i]) b.classList.add("correct");
+    else b.classList.remove("correct");
+  });
 }
 
 function updateSteps() {
-  let algo = document.getElementById("algo").value;
-  let steps = document.getElementById("steps");
+  let algo = document.getElementById("algo").value;
+  let steps = document.getElementById("steps");
 
-  if (algo === "Selection Sort") {
-    steps.innerText = "Selection Sort:\n1. Find smallest\n2. Swap to front\n3. Move forward\n4. Repeat";
-  } else if (algo === "Insertion Sort") {
-    steps.innerText = "Insertion Sort:\n1. Take next\n2. Compare left\n3. Shift right\n4. Insert";
-  } else if (algo === "Merge Sort") {
-    steps.innerText = "Merge Sort:\n1. Split\n2. Split again\n3. Merge sorted\n4. Done";
-  } else {
-    steps.innerText = "Binary Search:\n1. Check middle\n2. Go left/right\n3. Repeat";
-  }
+  if (algo === "Selection Sort") {
+    steps.innerText = "Selection Sort:\n1. Find smallest\n2. Swap to front\n3. Move forward\n4. Repeat";
+  } else if (algo === "Insertion Sort") {
+    steps.innerText = "Insertion Sort:\n1. Take next\n2. Compare left\n3. Shift right\n4. Insert";
+  } else if (algo === "Merge Sort") {
+    steps.innerText = "Merge Sort:\n1. Split\n2. Split again\n3. Merge sorted\n4. Done";
+  } else {
+    steps.innerText = "Binary Search:\n1. Check middle\n2. Go left/right\n3. Repeat";
+  }
 }
 
 updateSteps();
