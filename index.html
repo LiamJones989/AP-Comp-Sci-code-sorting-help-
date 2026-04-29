@@ -33,6 +33,7 @@
 </select>
 <button onclick="generate()">Start</button>
 <button onclick="giveHint()">Hint</button>
+<button onclick="showAnswer()">Show Answer</button>
 
 <p id="instruction"></p>
 
@@ -175,6 +176,44 @@ function giveHint() {
     let mid = Math.floor((low + high) / 2);
     boxes[mid].classList.add("hint");
   }
+
+  if (algo === "Selection Sort") {
+    let minIndex = currentIndex;
+    for (let i = currentIndex; i < arr.length; i++)
+      if (arr[i] < arr[minIndex]) minIndex = i;
+    boxes[minIndex].classList.add("hint");
+  }
+
+  if (algo === "Insertion Sort") {
+    boxes[currentIndex].classList.add("hint");
+  }
+}
+
+function showAnswer() {
+  let algo = document.getElementById("algo").value;
+  let boxes = document.querySelectorAll(".box");
+
+  boxes.forEach(b => b.classList.remove("hint"));
+
+  if (algo === "Selection Sort") {
+    let minIndex = currentIndex;
+    for (let i = currentIndex; i < arr.length; i++)
+      if (arr[i] < arr[minIndex]) minIndex = i;
+
+    boxes[currentIndex].classList.add("hint");
+    boxes[minIndex].classList.add("hint");
+  }
+
+  if (algo === "Insertion Sort") {
+    boxes[currentIndex].classList.add("hint");
+    if (currentIndex > 0) boxes[currentIndex - 1].classList.add("hint");
+  }
+
+  if (algo === "Binary Search") {
+    let mid = Math.floor((low + high) / 2);
+    boxes[mid].classList.add("hint");
+  }
+}
 
   if (algo === "Selection Sort") {
     let minIndex = currentIndex;
