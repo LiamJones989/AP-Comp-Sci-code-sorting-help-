@@ -141,10 +141,10 @@ function isValidMove(from, to) {
   let algo = document.getElementById("algo").value;
 
   if (algo === "Selection Sort") {
-    let minIndex = currentIndex;
+    let maxIndex = currentIndex;
     for (let i = currentIndex; i < arr.length; i++)
-      if (arr[i] < arr[minIndex]) minIndex = i;
-    return from === minIndex && to === currentIndex;
+      if (arr[i] > arr[maxIndex]) maxIndex = i;
+    return from === maxIndex && to === currentIndex;
   }
 
   if (algo === "Insertion Sort") {
@@ -161,7 +161,7 @@ function isValidMove(from, to) {
 function updateStepProgress(from, to) {
   let algo = document.getElementById("algo").value;
 
-  if (algo === "Selection Sort") currentIndex++;
+  if (algo === "Selection Sort") currentIndex++; // still progresses left to right (placing largest at front)
   if (algo === "Insertion Sort" && currentIndex < arr.length - 1) currentIndex++;
 }
 
