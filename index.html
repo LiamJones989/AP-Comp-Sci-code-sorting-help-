@@ -101,7 +101,13 @@ function render() {
           updateStepProgress(from, to);
           render();
         } else {
-          document.getElementById("instruction").innerText = "Invalid move";
+          let instr = document.getElementById("instruction");
+          instr.innerText = "Invalid move";
+          instr.style.color = "red";
+          setTimeout(() => {
+            instr.innerText = "Follow the correct moves";
+            instr.style.color = "black";
+          }, 2000);
         }
       });
     }
